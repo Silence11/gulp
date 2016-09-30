@@ -9,6 +9,8 @@ gulp构建前端项目
 * npm install --save-dev gulp-minify-css     //压缩css文件
 * npm install --save-dev gulp-imagemin       //图片压缩
 * npm install --save-dev imagemin-pngcrush
+* npm install --save-dev gulp-rename         //文件重命名
+* npm install --save-dev gulp-concat     //文件合并
 
 ###在项目的根目录下新建gulpfile.js文件
 ###配置如下
@@ -21,8 +23,8 @@ var minifycss = require('gulp-minify-css');//压缩css
 var imagemin = require('gulp-imagemin');//图片压缩
 var pngcrush = require('imagemin-pngcrush');
 //压缩html
-gulp.task('indexHtml',function(){
-    return gulp.src('index.html')//配置将要压缩的文件入口
+gulp.task('html',function(){
+    return gulp.src('html/*.html')//配置将要压缩的文件入口
         .pipe(htmlmin({
             collapseWhitespace: true,
             removeComments: true,
@@ -35,8 +37,10 @@ gulp.task('indexHtml',function(){
 })
 ////压缩js文件
 gulp.task('js', function() {
-    return gulp.src(['build/dzNewsList.js'])
+    return gulp.src(['build/*.js'])
+        .pipe(concat('all.js)) //合并为一个js
         .pipe(gulp.dest('../dist/build'))
+        .pipe(rename({suffix:'.min'})//将压缩的js重命名
         .pipe(uglify().on('error', function(e){
             console.log(e);
         }))
@@ -45,9 +49,9 @@ gulp.task('js', function() {
 });
 //压缩
 gulp.task('css', function() {
-    return gulp.src(['css/dzCss.css'])
+    return gulp.src(['css/*.css'])
         //.pipe(concat('main.css'))
-        .pipe(gulp.dest('../dist/css'))
+          .pipe(gulp.dest('../dist/css'))
         //.pipe(rename({ suffix: '.min' }))
         .pipe(minifycss())
         .pipe(gulp.dest('../dist/css'))
@@ -66,13 +70,13 @@ gulp.task('img', function() {
 });
 //执行任务
 gulp.task('build', function(){
-    gulp.run('js', 'indexHtml','css','img');//执行
+    gulp.run('js', 'html','css','img');//执行
     //watch 监听变化
-    gulp.watch('index.html', function(){
-        gulp.run('indexHtml');
+    gulp.watch('html/*.html', function(){
+        gulp.run('html');
     });
-    gulp.watch(['build/dzNewsList.js'], ['js']);
-    gulp.watch(['css/dzCss.css'], ['css']);
+    gulp.watch(['build/*.js'], ['js']);
+    gulp.watch(['css/*.css'], ['css']);
     gulp.watch('images/*', ['img']);
 });
 ```
