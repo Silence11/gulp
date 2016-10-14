@@ -38,7 +38,7 @@ gulp.task('html',function(){
 ////压缩js文件
 gulp.task('js', function() {
     return gulp.src(['build/*.js'])
-        .pipe(concat('all.js)) //合并为一个js
+        .pipe(concat('all.js')) //合并为一个js
         .pipe(gulp.dest('../dist/build'))
         .pipe(rename({suffix:'.min'})//将压缩的js重命名
         .pipe(uglify().on('error', function(e){
